@@ -311,7 +311,7 @@ type blockQueueEntry struct {
 }
 
 func (b *Builder) runBuildingJob(slotCtx context.Context, proposerPubkey boostTypes.PublicKey, vd ValidatorData, attrs *types.BuilderPayloadAttributes) {
-	Log.Info("runBuildingJob")
+	log.Info("runBuildingJob")
 
 	ctx, cancel := context.WithTimeout(slotCtx, 12*time.Second)
 	defer cancel()
