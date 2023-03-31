@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"math/big"
 
+	"runtime/debug"
 	"sort"
 	"sync"
 	"sync/atomic"
@@ -1353,6 +1354,9 @@ func (w *worker) fillTransactions(interrupt *int32, env *environment) (error, []
 			return err, nil, nil
 		}
 		log.Info("Flashbots bundle", "ethToCoinbase", ethIntToFloat(resultingBundle.TotalEth), "gasUsed", resultingBundle.TotalGasUsed, "bundleScore", resultingBundle.MevGasPrice, "bundleLength", len(bundleTxs), "numBundles", numBundles, "worker", w.flashbots.maxMergedBundles)
+
+		debug.PrintStack()
+
 		if len(bundleTxs) == 0 {
 			return errors.New("no bundles to apply"), nil, nil
 		}
