@@ -1020,7 +1020,7 @@ func (w *worker) commitBundle(env *environment, txs types.Transactions, interrup
 		if interrupt != nil {
 			if signal := atomic.LoadInt32(interrupt); signal != commitInterruptNone {
 				return signalToErr(signal)
-				}
+			}
 		}
 		// If we don't have enough gas for any further transactions discard the block
 		// since not all bundles of the were applied
@@ -1437,13 +1437,19 @@ func (w *worker) generateWork(params *generateParams) (*types.Block, *big.Int, e
 	// Set builder coinbase to be passed to beacon header
 	params.coinbase = w.coinbase
 
+	log.Info("0")
+
 	work, err := w.prepareWork(params)
 	if err != nil {
+		log.Info("E1")
 		return nil, nil, err
 	}
 	defer work.discard()
 
+	log.Info("1")
+
 	finalizeFn := func(env *environment, orderCloseTime time.Time, blockBundles []types.SimulatedBundle, allBundles []types.SimulatedBundle, noTxs bool) (*types.Block, *big.Int, error) {
+		log.Info("9")
 		block, profit, err := w.finalizeBlock(env, params.withdrawals, validatorCoinbase, noTxs)
 		if err != nil {
 			log.Error("could not finalize block", "err", err)
@@ -1466,32 +1472,51 @@ func (w *worker) generateWork(params *generateParams) (*types.Block, *big.Int, e
 		return block, profit, nil
 	}
 
+	log.Info("2")
+
 	if params.noTxs {
+		log.Info("E2")
 		return finalizeFn(work, time.Now(), nil, nil, true)
 	}
 
+	log.Info("3")
+
 	paymentTxReserve, err := w.proposerTxPrepare(work, &validatorCoinbase)
 	if err != nil {
+		log.Info("E3")
 		return nil, nil, err
 	}
 
+	log.Info("4")
+
 	orderCloseTime := time.Now()
+
+	log.Info("5")
 
 	err, blockBundles, allBundles := w.fillTransactionsSelectAlgo(nil, work)
 
 	if err != nil {
+		log.Info("E4")
 		return nil, nil, err
 	}
+
+	log.Info("6")
 
 	// no bundles or tx from mempool
 	if len(work.txs) == 0 {
+		log.Info("61")
 		return finalizeFn(work, orderCloseTime, blockBundles, allBundles, true)
 	}
 
+	log.Info("7")
+
 	err = w.proposerTxCommit(work, &validatorCoinbase, paymentTxReserve)
 	if err != nil {
+		log.Info("E5")
 		return nil, nil, err
 	}
+
+	log.Info("8")
 
 	return finalizeFn(work, orderCloseTime, blockBundles, allBundles, false)
 }
