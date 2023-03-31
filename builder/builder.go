@@ -245,7 +245,10 @@ func (b *Builder) submitCapellaBlock(block *types.Block, blockValue *big.Int, or
 }
 
 func (b *Builder) OnPayloadAttribute(attrs *types.BuilderPayloadAttributes) error {
+
+	log.Info("onPayloadAttribute")
 	if attrs == nil {
+		log.info("OPA E1")
 		return nil
 	}
 
