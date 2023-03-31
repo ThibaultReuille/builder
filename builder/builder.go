@@ -248,7 +248,7 @@ func (b *Builder) OnPayloadAttribute(attrs *types.BuilderPayloadAttributes) erro
 
 	log.Info("onPayloadAttribute")
 	if attrs == nil {
-		log.info("OPA E1")
+		log.Info("OPA E1")
 		return nil
 	}
 
